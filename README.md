@@ -10,7 +10,7 @@
 - 托盘常驻与自动更新（打包后启用）
 
 ## 运行截图
-![预览](src/image/images.png)
+![预览](src/image/example.png)
 
 ## 环境要求
 - Node.js 18+
