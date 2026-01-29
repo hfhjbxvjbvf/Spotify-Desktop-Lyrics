@@ -5,4 +5,4 @@ dist
 npm-debug.log
 pnpm-debug.log
 .xinghuo_continue_port
-.xinghuo_debug_port
+_xinghuo_continue_http.ps1
