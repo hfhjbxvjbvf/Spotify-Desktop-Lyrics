@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotify Desktop Lyrics</title>
+  </head>
+  <body>
+    <!-- 应用容器 -->
+    <div class="app is-compact" id="appRoot">
+      <!-- 操作提示 -->
+      <div class="action-hint" id="actionHint" aria-live="polite"></div>
+      <!-- 歌词浮层展示区 -->
+      <main class="lyric-overlay" id="lyricOverlay">
+        <!-- 顶部工具栏（拖拽区域） -->
+        <div class="overlay-toolbar">
+          <!-- 拖拽手柄 -->
+          <div
+            class="toolbar-drag-handle"
+            title="拖拽窗口"
+            aria-label="拖拽窗口"
+          ></div>
+          <!-- 刷新歌词 -->
+          <button
+            class="toolbar-btn is-icon"
+            id="refreshLyrics"
+            type="button"
+            title="刷新歌词"
+            aria-label="刷新歌词"
+          >
+            ⟳
+          </button>
+          <!-- 歌词偏移控制 -->
+          <button class="toolbar-btn" id="offsetMinus" type="button">-0.5s</button>
+          <button class="toolbar-btn" id="offsetPlus" type="button">+0.5s</button>
+          <!-- 歌词偏移显示 -->
+          <span class="toolbar-value" id="offsetValue" aria-live="polite">
+            偏移 0.0s
+          </span>
+          <!-- 播放控制区 -->
+          <button class="toolbar-btn is-icon" id="prevTrack" type="button">
+            ⏮
+          </button>
+          <button class="toolbar-btn is-icon" id="toggleLyrics" type="button">
+            ⏸
+          </button>
+          <button class="toolbar-btn is-icon" id="nextTrack" type="button">
+            ⏭
+          </button>
+          <!-- 设置与窗口控制 -->
+          <button class="toolbar-btn is-icon" id="settingsToggle" type="button">
+            ⚙
+          </button>
+          <!-- 调试控制台按钮 -->
+          <button
+            class="toolbar-btn is-icon"
+            id="openDevtools"
+            type="button"
+            aria-label="打开控制台"
+          >
+            🐞
+          </button>
+          <button class="toolbar-btn is-icon" id="pinToggle" type="button">🔒</button>
+          <button class="toolbar-btn is-icon" id="closeWindow" type="button">
+            ✕
+          </button>
+        </div>
+        <!-- 当前与下一句歌词 -->
+        <div class="lyric-lines">
+          <!-- 当前歌词 -->
+          <div class="lyric-line lyric-current" id="currentLineText">暂无歌词</div>
+          <!-- 下一句歌词 -->
+          <div class="lyric-line lyric-next" id="nextLineText"></div>
+        </div>
+      </main>
+
+      <!-- 设置面板 -->
+      <section class="settings-panel is-hidden" id="settingsPanel">
+        <!-- 设置面板头部 -->
+        <div class="settings-header">
+          <div class="settings-title">歌词设置</div>
+          <!-- 设置面板关闭按钮 -->
+          <button class="ghost settings-close" id="settingsClose" type="button">
+            收起
+          </button>
+        </div>
+
+        <!-- 顶部歌曲信息 -->
+        <header class="header">
+          <div class="title">Spotify Desktop Lyrics</div>
+          <!-- 版本号 -->
+          <div class="version" id="versionInfo">Prototype</div>
+          <div class="track">
+            <div class="track-title" id="trackTitle">未检测到歌曲</div>
+            <div class="track-artist" id="trackArtist">—</div>
+          </div>
+          <div class="status-bar">
+            <span class="status-pill" id="playbackStatus">等待中</span>
+            <span class="time-pill" id="playbackTime">00:00</span>
+          </div>
+        </header>
+
+        <!-- 歌词列表 -->
+        <main class="lyrics-container settings-lyrics">
+          <!-- 歌词列表 -->
+          <div class="lyrics-list" id="lyricsList"></div>
+        </main>
+
+        <!-- 手动导入区域 -->
+        <section class="import-section">
+          <label class="import-label" for="lyricsInput">手动导入 LRC / TXT</label>
+          <textarea
+            id="lyricsInput"
+            placeholder="粘贴 LRC 或纯文本歌词，点击导入即可同步"
+          ></textarea>
+          <button class="primary" id="importLyrics" type="button">导入歌词</button>
+          <div class="hint" id="hintMessage"></div>
+        </section>
+      </section>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>
