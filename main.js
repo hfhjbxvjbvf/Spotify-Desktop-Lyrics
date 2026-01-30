@@ -174,12 +174,6 @@ const PLAYBACK_CONTROL_ACTIONS = new Set(["prev", "next", "toggle"]);
 const TRAY_TOOLTIP = "Spotify Desktop Lyrics";
 
 /**
- * 自动更新检查间隔（毫秒）
- * @type {number}
- */
-const AUTO_UPDATE_INTERVAL_MS = 1000 * 60 * 30;
-
-/**
  * 播放桥接服务实例
  * @type {import("http").Server | null}
  */
@@ -1082,17 +1076,48 @@ function initAutoUpdater() {
   }
 
   // 关键逻辑：配置自动更新策略
-  autoUpdater.autoDownload = true;
+  autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
+
+  // 关键逻辑：记录已提示的版本，避免重复弹窗
+  let lastPromptedVersion = "";
 
   autoUpdater.on("checking-for-update", () => {
     console.info("[Updater] checking for update");
   });
 
   autoUpdater.on("update-available", (info) => {
+    const nextVersion = info?.version || "";
     console.info("[Updater] update available", {
-      version: info?.version || "",
+      version: nextVersion,
     });
+
+    if (nextVersion && nextVersion === lastPromptedVersion) {
+      return;
+    }
+
+    // 关键逻辑：首次发现新版本时弹窗提示用户是否下载
+    lastPromptedVersion = nextVersion;
+    dialog
+      .showMessageBox({
+        type: "info",
+        buttons: ["立即下载", "稍后"],
+        defaultId: 0,
+        cancelId: 1,
+        title: "发现新版本",
+        message: `检测到新版本 ${nextVersion || ""}，是否立即下载？`,
+      })
+      .then(({ response }) => {
+        if (response === 0) {
+          // 关键逻辑：用户确认后开始下载更新
+          autoUpdater.downloadUpdate().catch((error) => {
+            console.warn("[Updater] download failed", error);
+          });
+        }
+      })
+      .catch((error) => {
+        console.warn("[Updater] update prompt failed", error);
+      });
   });
 
   autoUpdater.on("update-not-available", (info) => {
@@ -1127,7 +1152,7 @@ function initAutoUpdater() {
       });
   });
 
-  // 关键逻辑：启动后立即检查并定时轮询
+  // 关键逻辑：启动后立即检查更新
   const checkUpdates = () => {
     autoUpdater.checkForUpdates().catch((error) => {
       console.warn("[Updater] check failed", error);
@@ -1135,7 +1160,6 @@ function initAutoUpdater() {
   };
 
   checkUpdates();
-  setInterval(checkUpdates, AUTO_UPDATE_INTERVAL_MS);
 }
 
 /**

@@ -1,13 +1,14 @@
 {
   "name": "spotify-desktop-electron",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "description": "Spotify Desktop Lyrics Prototype",
   "main": "main.js",
   "scripts": {
     "dev": "electron .",
     "start": "electron .",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win",
+    "dist:publish": "electron-builder --win --publish=always"
   },
   "build": {
     "appId": "com.spotify.desktoplyrics",
@@ -16,10 +17,21 @@
     "directories": {
       "output": "dist"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "hfhjbxvjbvf",
+        "repo": "Spotify-Desktop-Lyrics"
+      }
+    ],
     "files": ["**/*"],
     "win": {
       "target": "nsis",
       "icon": "src/image/exe.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   },
   "dependencies": {
