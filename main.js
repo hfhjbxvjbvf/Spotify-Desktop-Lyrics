@@ -251,6 +251,25 @@ function hideWindowToTray(targetWindow) {
 }
 
 /**
+ * 恢复主窗口并聚焦
+ * @returns {void}
+ */
+function restoreMainWindow() {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    createMainWindow();
+    return;
+  }
+
+  // 关键逻辑：显示窗口并恢复任务栏
+  mainWindow.setSkipTaskbar(false);
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+/**
  * 获取窗口交互区域范围
  * @param {{ x: number, y: number, width: number, height: number }} bounds
  * @param {boolean} isHovering
@@ -1163,6 +1182,26 @@ function initAutoUpdater() {
 }
 
 /**
+ * 初始化单实例锁
+ * @returns {boolean}
+ */
+function initSingleInstanceLock() {
+  const gotLock = app.requestSingleInstanceLock();
+  if (!gotLock) {
+    return false;
+  }
+
+  app.on("second-instance", () => {
+    // 关键逻辑：重复启动时唤起已有窗口
+    app.whenReady().then(() => {
+      restoreMainWindow();
+    });
+  });
+
+  return true;
+}
+
+/**
  * 初始化应用
  * @returns {void}
  */
@@ -1174,7 +1213,12 @@ function initApp() {
   initAutoUpdater();
 }
 
-app.whenReady().then(initApp);
+// 关键逻辑：未获取到单实例锁时直接退出
+if (!initSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.whenReady().then(initApp);
+}
 
 app.on("before-quit", handleBeforeQuit);
 
