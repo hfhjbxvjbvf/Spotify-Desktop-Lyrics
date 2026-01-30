@@ -21,7 +21,8 @@
       {
         "provider": "github",
         "owner": "hfhjbxvjbvf",
-        "repo": "Spotify-Desktop-Lyrics"
+        "repo": "Spotify-Desktop-Lyrics",
+        "releaseType": "release"
       }
     ],
     "files": ["**/*"],
