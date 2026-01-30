@@ -260,8 +260,8 @@ function restoreMainWindow() {
     return;
   }
 
-  // 关键逻辑：显示窗口并恢复任务栏
-  mainWindow.setSkipTaskbar(false);
+  // 关键逻辑：显示窗口但保持任务栏隐藏
+  mainWindow.setSkipTaskbar(true);
   if (mainWindow.isMinimized()) {
     mainWindow.restore();
   }
@@ -917,6 +917,9 @@ function createMainWindow() {
   // 关键逻辑：确保窗口接收鼠标事件
   mainWindow.setIgnoreMouseEvents(false);
 
+  // 关键逻辑：窗口始终隐藏任务栏图标，仅在托盘展示
+  mainWindow.setSkipTaskbar(true);
+
   // 关键逻辑：启动主进程悬停轮询
   startHoverPolling(mainWindow);
 
@@ -991,6 +994,9 @@ function createSettingsWindow() {
     },
   });
 
+  // 关键逻辑：设置弹窗也保持任务栏隐藏
+  settingsWindow.setSkipTaskbar(true);
+
   settingsWindow.loadFile(path.join(__dirname, "src", "index.html"), {
     query: {
       view: "settings",
@@ -1062,8 +1068,8 @@ function createTray() {
       return;
     }
 
-    // 关键逻辑：点击托盘恢复窗口
-    mainWindow.setSkipTaskbar(false);
+    // 关键逻辑：点击托盘恢复窗口但不显示任务栏
+    mainWindow.setSkipTaskbar(true);
     mainWindow.show();
     mainWindow.focus();
   });
